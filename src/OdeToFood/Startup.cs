@@ -25,42 +25,54 @@ namespace OdeToFood
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            // in order to get the iGreter working, it needs to be registered here.
-            // by defualt there are already 16 services running before we get to this point
-            // .AddSingleton() adds the service once to be used throughout.
-            // there are other adds, .AddTransient() adds a service that only lasts a little while
-
-            // this says:
-            // "whenever you see something that needs an IGreeter, 
-            // this is the concrete class that you need to instatiate and pass in as the IGreeter.
-            // this is the only part of the app that knows what kind of IGreeter we're using. 
             services.AddSingleton<IGreeter, Greeter>();
-
-            // with this services, ,NET knows that when an IConfiguration is needed, it will pass in "Configuration"
-            // since Configuration is an Iconfiguration.
             services.AddSingleton(Configuration);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // This method gets called by the runtime. 
+        // Use this method to configure the HTTP request pipeline.
+        // all HTtP requests go through this middleware
         public void Configure(
             IApplicationBuilder app, 
             IHostingEnvironment env, 
             ILoggerFactory loggerFactory,
-            IGreeter greeter) // the configure method now also takes an IGreeter
-            // in order for it to work, it needs to be registered
-            // where are the other parameters coming from?
-            // ASP.NET knows about these services by default
+            IGreeter greeter)
         {
             loggerFactory.AddConsole();
 
+            // this middleware displays an error pages that is more useful for developers.
+            // it only activates when you're in developer mode.
             if (env.IsDevelopment())
             {
+                // for demo, commented out ASP.NET core diagnostics dependency
+                // w/o it, the next line errored, not many pieces of middleware available
                 app.UseDeveloperExceptionPage();
             }
 
+            // added this middleware from Diagnostics 
+            // note: before app.Run
+            // serves a basic welcome page, useful for debugging, does this app serve anything?
+            // Terminal piece of middleware when invoked without parameters. No other middleware can be reached
+            //app.UseWelcomePage();
+
+            // This overload says, "handle all requests to the root url/welcome
+            //app.UseWelcomePage("/welcome");
+
+            // there is this property that you can run on a WelcomePage that allows one to add options.
+            // most middleware will have an object like this. It will usually follow the convetion of 
+            // MiddlwareNameOptions
+            app.UseWelcomePage(new WelcomePageOptions
+            {
+                Path = "/welcomer"
+            });
+
+            // dont' normally do much with .Run. More for demo purposes, it's low-level.
             app.Run(async (context) =>
             {
-                // changing it so the greeting is coming from the IGreeter instead of hard-code.
+               // All HTTP req go through this w/ current setup.
+               // .NET gives the context object, which has all kinds of information about the req
+               // e.g. context.Request.body
+               
                 var greeting = greeter.GetGreeting();
                 await context.Response.WriteAsync(greeting);
             });
