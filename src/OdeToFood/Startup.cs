@@ -39,21 +39,28 @@ namespace OdeToFood
         {
             loggerFactory.AddConsole();
 
-            /*
-             * Again, placement is key. This block has to be here because middleware is run from top to bottom,
-             * then bottom to top on its way back out
-             * |   A
-             * |   |
-             * V---|
-             */
-
+            // ASP.NET looks to the properties of the project to see what environment you are in.
+            // open teh properties form src/OdeToFood.xproj 
+            // There you can set the Environment variables to whatever.
             if (env.IsDevelopment())
             {
-                // commenting out for demo
-                // with this middleware, unhandled exceptions are given a nice page the user can see.
-                // it has a stack trace and shows 
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                // this will be hit if the env is not Development, obviously.
+                // this is an option. Set up a page to show the user a beautiful excpetion
+                // while loggin what the exceptions were on the backend
+                //app.UseExceptionHandler("/error");
+
+                // another option is to use these options
+                app.UseExceptionHandler(new ExceptionHandlerOptions
+                {
+                     // this prints out "Oops!" when there is an unhandled exception
+                    ExceptionHandler = context => context.Response.WriteAsync("Oops!")
+                });
+            }
+
 
             app.UseWelcomePage(new WelcomePageOptions
             {
@@ -62,7 +69,7 @@ namespace OdeToFood
 
             app.Run(async (context) =>
             {
-                // This is just an unhandled exception to help demonstrate what app.UseDeveloperExceptionPage does
+                // still this unhandled exception for demo
                 throw new System.Exception("Something went wronmg");
                 var greeting = greeter.GetGreeting();
                 await context.Response.WriteAsync(greeting);
