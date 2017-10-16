@@ -39,27 +39,32 @@ namespace OdeToFood
         {
             loggerFactory.AddConsole();
 
-            // ASP.NET looks to the properties of the project to see what environment you are in.
-            // open teh properties form src/OdeToFood.xproj 
-            // There you can set the Environment variables to whatever.
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
-                // this will be hit if the env is not Development, obviously.
-                // this is an option. Set up a page to show the user a beautiful excpetion
-                // while loggin what the exceptions were on the backend
-                //app.UseExceptionHandler("/error");
-
-                // another option is to use these options
                 app.UseExceptionHandler(new ExceptionHandlerOptions
                 {
-                     // this prints out "Oops!" when there is an unhandled exception
                     ExceptionHandler = context => context.Response.WriteAsync("Oops!")
                 });
             }
+            // This one came after, the code below. 
+            // it tells the program to look for default files.
+            // like index.html.
+            // code-wise, it needs to come above UseStaticFiles();
+            // it looks for defualts, then changes the path for later middleware. It doesn't do its own serving.
+            //app.UseDefaultFiles();
+
+            // had to install Microsoft Static Files NuGet.
+            // this is set for default at first. It will look for files in the wwwroot folder
+            // this makes it possible to go to http://localhost:613234/index.html
+            //app.UseStaticFiles();
+
+            // this combines the two above.
+            // now every path works well.
+            app.UseFileServer();
 
 
             app.UseWelcomePage(new WelcomePageOptions
@@ -69,8 +74,6 @@ namespace OdeToFood
 
             app.Run(async (context) =>
             {
-                // still this unhandled exception for demo
-                throw new System.Exception("Something went wronmg");
                 var greeting = greeter.GetGreeting();
                 await context.Response.WriteAsync(greeting);
             });
