@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Routing;
+using System;
 
 namespace OdeToFood
 {
@@ -54,25 +56,38 @@ namespace OdeToFood
                 });
             }
            
-            // deleted index.html, so that won't get served. Leaving this middleware here, b/c will be used later
             app.UseFileServer();
 
-            // this will look at an HTTP request and try to map to a method on a C# class
-            // MVC will instantiate a class and invoke a method which will tell the MVC fw what to do next.
-            // MVC will take control of routing
-            app.UseMvcWithDefaultRoute();
+            // Changed from app.UseMvcWithDefaultRoute();
+            app.UseMvc(ConfigureRoutes);
 
-            // Getting rid of this stuff now. Not going to be used going forward.
-            //app.UseWelcomePage(new WelcomePageOptions
-            //{
-            //    Path = "/welcome"
-            //});
+            // this is added as a catch-all for if the route is not found.
+            app.Run(ctx => ctx.Response.WriteAsync("Not found"));
+        }
 
-            //app.Run(async (context) =>
-            //{
-            //    var greeting = greeter.GetGreeting();
-            //    await context.Response.WriteAsync(greeting);
-            //});
+        // auto generated from above 
+        private void ConfigureRoutes(IRouteBuilder routeBuilder)
+        {
+            // 2nd parameter is importatn
+            // it's a template to tell how to handle route requests
+            // if given this route /Home/Index
+            // it will know to look in the controller "HomeController" ("Controller is automatically appended")
+            // for a method, "Index" 
+            // these are  controller and action
+            // MVC knows to plug in values for that in {}.
+            // could have hard coded parts to the route, like admin/{controller}/{action}
+            // {id?} is optional. these could be additional parameters.
+            // This didn't work
+            //routeBuilder.MapRoute("Default", "{controller}/{action}/{id?}");
+
+            // this says, If you don't find a controller in the URL, 
+            // use Home as the defualt controller, and ditto use Index as the default action
+            // Could set any defualt names we wanted. 
+            // can spell it out with localhost:223452/home/index or just /home. All go to same place
+            routeBuilder.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
+
+            // This is called Convention Based Routing
+            // could have any number of other routes for special needs.
         }
     }
 }
