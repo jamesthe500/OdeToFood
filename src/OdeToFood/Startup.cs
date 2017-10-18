@@ -25,6 +25,9 @@ namespace OdeToFood
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // added this service which came with the NuGet package for MVC. App won't run w/o services
+            // not sure what services are...
+            services.AddMvc();
             services.AddSingleton<IGreeter, Greeter>();
             services.AddSingleton(Configuration);
         }
@@ -50,33 +53,26 @@ namespace OdeToFood
                     ExceptionHandler = context => context.Response.WriteAsync("Oops!")
                 });
             }
-            // This one came after, the code below. 
-            // it tells the program to look for default files.
-            // like index.html.
-            // code-wise, it needs to come above UseStaticFiles();
-            // it looks for defualts, then changes the path for later middleware. It doesn't do its own serving.
-            //app.UseDefaultFiles();
-
-            // had to install Microsoft Static Files NuGet.
-            // this is set for default at first. It will look for files in the wwwroot folder
-            // this makes it possible to go to http://localhost:613234/index.html
-            //app.UseStaticFiles();
-
-            // this combines the two above.
-            // now every path works well.
+           
+            // deleted index.html, so that won't get served. Leaving this middleware here, b/c will be used later
             app.UseFileServer();
 
+            // this will look at an HTTP request and try to map to a method on a C# class
+            // MVC will instantiate a class and invoke a method which will tell the MVC fw what to do next.
+            // MVC will take control of routing
+            app.UseMvcWithDefaultRoute();
 
-            app.UseWelcomePage(new WelcomePageOptions
-            {
-                Path = "/welcome"
-            });
+            // Getting rid of this stuff now. Not going to be used going forward.
+            //app.UseWelcomePage(new WelcomePageOptions
+            //{
+            //    Path = "/welcome"
+            //});
 
-            app.Run(async (context) =>
-            {
-                var greeting = greeter.GetGreeting();
-                await context.Response.WriteAsync(greeting);
-            });
+            //app.Run(async (context) =>
+            //{
+            //    var greeting = greeter.GetGreeting();
+            //    await context.Response.WriteAsync(greeting);
+            //});
         }
     }
 }
