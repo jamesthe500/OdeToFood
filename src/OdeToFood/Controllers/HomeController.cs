@@ -16,13 +16,18 @@ namespace OdeToFood.Controllers
                 Name = "Casa di Kobe"
             };
 
-            // returning this instead of simple text for the greater flexibility, and stuff.
-            // it derives from IActionResult, thus that change above.
-            //return Content( "Hello, from the Homecontroller");
+            // returns a "View" result which will generate HTML to send to the client
+            // view results also implement IActionResults
+            // Initially it errored. Says it looked for the file and path:
+            // /Views/Home/Index.cshtml
+            // follows the naming convention of short controller name, action name
+            // to get it to work, added the needed folder structure and a cshtml file.
+            //return View();
 
-            // this will serialize teh data and return it as json by default
-            // this is great for an API
-            return new ObjectResult(model);
+            // passing model so that the object is available to cshtml
+            return View(model);
+
+             
         }        
     }
 }
