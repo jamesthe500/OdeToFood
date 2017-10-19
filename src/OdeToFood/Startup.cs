@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Routing;
 using System;
+using OdeToFood.Services;
 
 namespace OdeToFood
 {
@@ -31,6 +32,10 @@ namespace OdeToFood
             services.AddMvc();
             services.AddSingleton<IGreeter, Greeter>();
             services.AddSingleton(Configuration);
+            // every time you need IRestaurantData, instantiate the InMemoryRestaurantData
+            // scoped means that for every HTTP request, a new InMemory... object will be instatiated.
+            services.AddScoped<IRestaurantData, InMemoryRestaurantData>();
+
         }
 
         // This method gets called by the runtime. 

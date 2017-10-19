@@ -1,18 +1,21 @@
-﻿@* lowercase @model is for setting what the model should be 
-    upper case @Model is to provide expressions *@
-@model OdeToFood.Models.Restaurant
+﻿@* with teh data source chaned to a list, this needs to be redefined *@
+@model IEnumerable<OdeToFood.Models.Restaurant>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Ode to Food</title>
 </head>
 <body>
-    @*This worked to show the data from passed in as "model"
-        but no intellisense help b/c it doesnt' know
-        Added directive above to inform
-        now there are suggestions, and errors and such. 
-        <h1>@Model.Name</h1>*@
-    <h1>@Model.Name</h1>
-    <div>It even has a div.</div>
+    <h1>Welcome</h1>
+    <table>
+        @* the @ indicates the start of cs code. *@
+        @foreach (var restaurant in Model)
+        {
+            <tr>
+                <td>@restaurant.Id</td>
+                <td>@restaurant.Name</td>
+            </tr>
+        }
+    </table>
 </body>
 </html>
