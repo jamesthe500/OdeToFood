@@ -1,18 +1,12 @@
 ﻿@using OdeToFood.Controllers
 @model OdeToFood.Entities.Restaurant
 
-@*One way to handle the null possibility is:
-    @if (Model == null)
-    {
-        <h1>Sorry, we couldn't find your restaurant</h1>
-    } else
-    {... correct code }
-
-    //There is a way to do this through the home controller, perhaps a better way. Look there for that.
-     *@
 
 <h1>@Model.Name</h1>
 
-<div>...details...</div>
+<div>Id: @Model.Id</div>
+<div>
+    Cuisine: @Model.Cuisine
+</div>
 @* can use nameof here too, just have to add a using statement up above. *@
-<div>@Html.ActionLink("Go home",nameof(HomeController.Index))</div>
+<div>@Html.ActionLink("Go home", nameof(HomeController.Index))</div>
