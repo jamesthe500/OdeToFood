@@ -1,5 +1,4 @@
-﻿@* with teh data source chaned to a list, this needs to be redefined *@
-@model IEnumerable<OdeToFood.Models.Restaurant>
+﻿@model OdeToFood.ViewModels.HomePageViewModel
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -7,12 +6,20 @@
 </head>
 <body>
     <h1>Welcome</h1>
+    <h3>@Model.CurrentMessage</h3>
     <table>
-        @* the @ indicates the start of cs code. *@
-        @foreach (var restaurant in Model)
+        @foreach (var restaurant in Model.Restaurants)
         {
             <tr>
-                <td>@restaurant.Id</td>
+                <td>
+                    @* Making it so the user gets links. 1st is just to write some html
+                        2nd is to use a property available inside a Razor view *@
+                    <a href="/home/details/@restaurant.Id">Details</a>
+                    @* actionLInk helps in that if you ever change the routing rules, the link won't break. 
+                        has 7 overloads. this one is, "Text to display", "Action to use", "what route to construct" which is "the one that ends with Id I guess.
+                        it'll build an href out of this.*@
+                    @Html.ActionLink("View", "Details", new { id = restaurant.Id })
+                </td>
                 <td>@restaurant.Name</td>
             </tr>
         }
