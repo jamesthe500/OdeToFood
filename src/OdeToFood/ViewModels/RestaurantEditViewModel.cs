@@ -1,11 +1,12 @@
 ﻿using OdeToFood.Entities;
+using System.ComponentModel.DataAnnotations;
 
-// this model is just for taking in data from the Create view.
-// we don't use the full Restaurant model as there is data corruption possiblity.
 namespace OdeToFood.ViewModels
 {
     public class RestaurantEditViewModel
     {
+        // adding validation here, on the model taht is just for taking in the data, is teh least corruptable way to validate
+        [Required, MaxLength(80)]
         public string Name { get; set; }
         public CuisineType Cuisine { get; set; }
     }

@@ -5,31 +5,23 @@
     <h1>Create</h1>
     
     <div>
-        <form method="post" action="/home/create">
-            <input name="Name" placeholder="Restaurant Name" type="text"/>
-            @* used the html generated below to make this happen *@
-            <select data-val="true" data-val-required="The Cuisine field is required." id="Cuisine" name="Cuisine">
-                <option value="0">None</option>
-                <option value="1">Italian</option>
-                <option value="2">French</option>
-                <option value="3">Japanese</option>
-                <option value="4">American</option>
-                <option value="5">Sushi</option>
-            </select>
-            <input type="submit" />
-        </form>
-
         @using (Html.BeginForm()) // this creates the <form> tag here on top, closes down by the }
         {
             <div>
+                @* should collect all the validation messages in one place.*@
+                @Html.ValidationSummary()
                 @Html.LabelFor(m => m.Name)
-                @Html.TextBoxFor(m => m.Name)
+                @* making this and EditorFor allows more control to the controler
+                    can make define more constraints.*@
+                @Html.EditorFor(m => m.Name)
+                @* will display if entry doesn't pass validation
+                    Same below. would want to format to show up in red.*@
+                @Html.ValidationMessageFor(m => m.Name)
             </div>
             <div>
                 @Html.LabelFor(m => m.Cuisine)
-                @* second parameter below is for the source of the data.
-                     here able to use CuisineType after bringing in using statement above. *@
                 @Html.DropDownListFor(m => m.Cuisine, Html.GetEnumSelectList(typeof(CuisineType)))
+                @Html.ValidationMessageFor(m => m.Cuisine)
             </div>
             <div>
                 <input type="submit" value="Save!"/>

@@ -8,15 +8,11 @@ namespace OdeToFood.Services
     {
         IEnumerable<Restaurant> GetAll();
         Restaurant Get(int id);
-        // first add this definition for the method on the interface
-        // this will return a restaurant and it takes the new restaurant we are adding.
         Restaurant Add(Restaurant newRestaurant);
     }
 
     public class InMemoryRestaurantData : IRestaurantData
     {
-        // this makes in not thread-safe. It will instatiate this list just once.
-        // wouldn't want to use static in a concurrent users situation, fine for our demo purposes
         static InMemoryRestaurantData()
         {
             _restaurants = new List<Restaurant>
